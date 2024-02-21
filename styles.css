@@ -1,0 +1,166 @@
+/*Selecting everything to make styling widths & heights easier*/
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+/*Global CSS variables that can be accessed throughout the entire stylesheet.*/
+:root {
+    --cell-size: 100px;
+    /*X and O will be slightly smaller than the cell*/
+    --mark-size: calc(var(--cell-size) * .9);
+}
+
+body {
+    margin: 0;
+}
+
+.board {
+    /*Make board fill entire screen so easier to center it*/
+    width: 100vw;
+    height: 100vh;
+    /*Will center the board element = centers everything in the board too*/
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    /*Will center/align each thing that's inside each cell and not actual cell itself*/
+    justify-items: center;
+    align-items: center;
+    /*Align cells in 3by3 vs one straight line*/
+    grid-template-columns: repeat(3, auto);
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border: 1px solid black;
+    /*Styles for X/O displayed & centered in each cell*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*Relative so each X/O can be displayed evenly*/
+    position: relative;
+    /*Gives pointer when hovering over each cell*/
+    cursor: pointer;
+}
+/*Get rid of border on top*/
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+    border-top: none;
+}
+/*Get rid of border on left side*/
+.cell:nth-child(3n + 1) {
+    border-left: none;
+}
+/*Get rid of border on bottom side*/
+.cell:nth-child(7),
+.cell:nth-child(8),
+.cell:last-child {
+    border-bottom: none;
+}
+/*Get rid of border on right side*/
+.cell:nth-child(3n + 3) {
+    border-right: none;
+}
+/*Hovering over each cell that already has X/O will show not allowed pointer*/
+.cell.x,
+.cell.circle {
+    cursor: not-allowed;
+}
+
+.cell.x::before,
+.cell.x::after,
+.cell.circle::before {
+    background-color: black;
+}
+
+.board.x .cell:not(.x):not(.circle):hover::before,
+.board.x .cell:not(.x):not(.circle):hover::after,
+.board.circle .cell:not(.x):not(.circle):hover::before {
+    background-color: lightgray;
+}
+
+/*Using plain css to create the X's*/
+/*When x class is applied you want to hover over cell showing that X*/
+.cell.x::before,
+.cell.x::after,
+.board.x .cell:not(.x):not(.circle):hover::before,
+.board.x .cell:not(.x):not(.circle):hover::after {
+    content: '';
+    /*Original static position displays each line next to each other in document flow, so need to change to absolute */
+    position: absolute;
+    width: calc(var(--mark-size) * .15);
+    height: var(--mark-size);
+}
+/*Rotates one part of the X's*/
+.cell.x::before,
+.board.x .cell:not(.x):not(.circle):hover::before {
+    transform: rotate(45deg);
+}
+
+.cell.x::after,
+.board.x .cell:not(.x):not(.circle):hover::after {
+    transform: rotate(-45deg);
+}
+
+/*Using plain css to create the O's*/
+.cell.circle::before,
+.cell.circle::after,
+/*Style before and after element on the cell that's not a X/O*/
+.board.circle .cell:not(.x):not(.circle):hover::before, 
+.board.circle .cell:not(.x):not(.circle):hover::after {
+    content: '';
+    /*Original static position displays each line next to each other in document flow, so need to change to absolute */
+    position: absolute;
+    border-radius: 50%;
+}
+/*Create circle behind bigger than one in front*/
+.cell.circle::before,
+.board.circle .cell:not(.x):not(.circle):hover::before {
+    width: var(--mark-size);
+    height: var(--mark-size);
+}
+/*Create cirlcle in front smaller and white color*/
+.cell.circle::after,
+.board.circle .cell:not(.x):not(.circle):hover::after {
+    width: calc(var(--mark-size) * .70);
+    height: calc(var(--mark-size) * .70);
+    background-color: white;
+}
+/*Style button*/
+/*Position div to center & take up every space*/
+.winning-message {
+    /*By default display none...Do not want this to show by default*/
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .9);
+    /*Center restart button*/
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 5rem;
+    /*Stacks vertically everything inside this div*/
+    flex-direction: column;
+}
+
+.winning-message button {
+    font-size: 3rem;
+    background-color: white;
+    border: 1px solid black;
+    padding: .25em .5em;
+    cursor: pointer;
+}
+/*Inverts button color when hovered on*/
+.winning-message button:hover {
+    background-color: black;
+    color: white;
+    border-color: white;
+}
+
+.winning-message.show {
+    display: flex;
+}
